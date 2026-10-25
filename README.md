@@ -19,7 +19,7 @@ A userscript that cleans up the FapHouse video feed. It hides premium, paid and 
 
 The script declares `@updateURL` and `@downloadURL` pointing to this repository. Your userscript manager checks for new versions on its own schedule (once a day by default in Tampermonkey) and installs them whenever the `@version` number goes up. To check right away, use **Check for userscript updates** in the Tampermonkey menu.
 
-> If you already have an older copy installed by hand (for example v0.8 or v1.6 without update URLs), install the script once from the link above. It replaces the old copy and keeps your saved lists, which are stored under the same script name.
+> If you already have an older copy installed by hand (for example v0.8 or v1.6), install the script once from the link above. It replaces the old copy and keeps your saved lists, which are stored under the same script name.
 
 ## Features
 
@@ -27,17 +27,17 @@ The script declares `@updateURL` and `@downloadURL` pointing to this repository.
 
 Each filter has a checkbox and a live count of how many videos it is hiding on the current page.
 
-| Filter (panel label) | What it hides | Default |
+| Filter | What it hides | Default |
 |---|---|---|
-| **Премиум** (Premium) | Videos that need a fan or premium subscription | On |
-| **Платные** (Paid) | Pay-per-view (VOD) videos | On |
+| **Premium** | Videos that need a fan or premium subscription | On |
+| **Paid** | Pay-per-view (VOD) videos | On |
 | **VR** | VR videos | Off |
-| **Игнор** (Ignored) | Videos you added to your ignore list | On |
-| **Каналы** (Channels) | All videos from channels you blocked | On |
-| **Просмотренные** (Watched) | Videos you've already opened | On |
-| **Реклама** (Ads) | The header banner, the "Moments" block and the exclusive-scenes promo section | On |
+| **Ignored** | Videos you added to your ignore list | On |
+| **Channels** | All videos from channels you blocked | On |
+| **Watched** | Videos you've already opened | On |
+| **Ads** | The header banner, the "Moments" block and the exclusive-scenes promo section | On |
 
-The **Все** (All) master checkbox turns every filter on or off at once. It shows a partial state when only some filters are on, and its counter shows the total number of hidden videos.
+The **All** master checkbox turns every filter on or off at once. It shows a partial state when only some filters are on, and its counter shows the total number of hidden videos.
 
 ### Ignoring videos and blocking channels
 
@@ -56,9 +56,9 @@ The **Все** (All) master checkbox turns every filter on or off at once. It sh
 
 The links at the bottom of the panel open a window for each list:
 
-- **Игнор видео**: ignored videos
-- **Игнор каналов**: blocked channels
-- **Просмотрено**: watched videos (the 100 most recent are shown)
+- **Ignored videos**
+- **Blocked channels**
+- **Watched** (the 100 most recent are shown)
 
 In each window you can open an entry, remove a single entry, or clear the whole list.
 
@@ -76,5 +76,4 @@ In each window you can open an entry, remove a single entry, or clear the whole 
 
 ## Notes
 
-- The panel interface is currently in Russian. The English names in the table above are translations for reference.
 - The script relies on FapHouse's page markup. If the site changes its layout, some filters may stop working until the script is updated. Please [open an issue](https://github.com/Common-Fool/Faphouse-cleaner/issues) if that happens.

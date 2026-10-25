@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FapHouse Premium Video Hider
 // @namespace    http://tampermonkey.net/
-// @version      1.6
+// @version      1.7
 // @description  Hide premium, paid, VR, ignored, blocked channels and watched videos from feed
 // @author       Common-Fool
 // @homepageURL  https://github.com/Common-Fool/Faphouse-cleaner
@@ -20,7 +20,7 @@
 (function() {
     'use strict';
 
-    // ==================== Данные ====================
+    // ==================== Data ====================
 
     let hidePremium = GM_getValue('hidePremium', true);
     let hidePaid = GM_getValue('hidePaid', true);
@@ -35,7 +35,7 @@
     let panelState = GM_getValue('panelState', 1);
     if (panelState !== 0) panelState = 1;
 
-    // ==================== Lookup-индексы (Set) ====================
+    // ==================== Lookup indexes (Set) ====================
 
     let ignoredIds = new Set();
     let watchedCodes = new Set();
@@ -51,7 +51,7 @@
 
     rebuildLookups();
 
-    // ==================== Синхронизация между вкладками ====================
+    // ==================== Cross-tab sync ====================
 
     const toggleKeys = {
         hidePremium:        v => { hidePremium = v; },
@@ -66,13 +66,13 @@
     const AD_SELECTOR = '.header-banner, .moments-main-page, .exclusive-scenes-section__container';
 
     const toggleDefs = [
-        { id: 'fh-premium-toggle',          countId: 'fh-cnt-premium',  key: 'hidePremium',         label: 'Премиум',       get: () => hidePremium },
-        { id: 'fh-paid-toggle',             countId: 'fh-cnt-paid',     key: 'hidePaid',            label: 'Платные',       get: () => hidePaid },
-        { id: 'fh-vr-toggle',               countId: 'fh-cnt-vr',       key: 'hideVR',              label: 'VR',            get: () => hideVR },
-        { id: 'fh-ignored-toggle',          countId: 'fh-cnt-ignored',  key: 'hideIgnored',         label: 'Игнор',         get: () => hideIgnored },
-        { id: 'fh-blocked-channels-toggle', countId: 'fh-cnt-channels', key: 'hideBlockedChannels', label: 'Каналы',        get: () => hideBlockedChannels },
-        { id: 'fh-watched-toggle',          countId: 'fh-cnt-watched',  key: 'hideWatched',         label: 'Просмотренные', get: () => hideWatched },
-        { id: 'fh-ads-toggle',              countId: 'fh-cnt-ads',      key: 'hideAds',             label: 'Реклама',       get: () => hideAds },
+        { id: 'fh-premium-toggle',          countId: 'fh-cnt-premium',  key: 'hidePremium',         label: 'Premium',        get: () => hidePremium },
+        { id: 'fh-paid-toggle',             countId: 'fh-cnt-paid',     key: 'hidePaid',            label: 'Paid',           get: () => hidePaid },
+        { id: 'fh-vr-toggle',               countId: 'fh-cnt-vr',       key: 'hideVR',              label: 'VR',             get: () => hideVR },
+        { id: 'fh-ignored-toggle',          countId: 'fh-cnt-ignored',  key: 'hideIgnored',         label: 'Ignored',        get: () => hideIgnored },
+        { id: 'fh-blocked-channels-toggle', countId: 'fh-cnt-channels', key: 'hideBlockedChannels', label: 'Channels',       get: () => hideBlockedChannels },
+        { id: 'fh-watched-toggle',          countId: 'fh-cnt-watched',  key: 'hideWatched',         label: 'Watched',        get: () => hideWatched },
+        { id: 'fh-ads-toggle',              countId: 'fh-cnt-ads',      key: 'hideAds',             label: 'Ads',            get: () => hideAds },
     ];
 
     for (const [key, setter] of Object.entries(toggleKeys)) {
@@ -93,7 +93,7 @@
         });
     }
 
-    // ==================== Утилиты ====================
+    // ==================== Utilities ====================
 
     function escapeHtml(str) {
         if (!str) return '';
@@ -120,7 +120,7 @@
         return url ? url.split('#')[0].split('?')[0] : '';
     }
 
-    // ==================== Стили ====================
+    // ==================== Styles ====================
 
     GM_addStyle(`
         .fh-hidden {
@@ -554,7 +554,7 @@
         }
     `);
 
-    // ==================== CRUD операции ====================
+    // ==================== CRUD operations ====================
 
     function ignoreVideo(videoId, videoTitle, videoUrl) {
         if (ignoredIds.has(videoId)) return;
@@ -604,7 +604,7 @@
         updateWatchedListModal();
     }
 
-    // ==================== DOM-кнопки на видео ====================
+    // ==================== Video DOM buttons ====================
 
     function addClickWatcher(videoElement) {
         const videoLink = videoElement.querySelector('.t-vl');
@@ -612,7 +612,7 @@
         videoLink.dataset.fhWatcherAdded = 'true';
 
         const videoId = videoElement.getAttribute('data-id');
-        const videoTitle = videoElement.querySelector('.t-tv')?.textContent || 'Без названия';
+        const videoTitle = videoElement.querySelector('.t-tv')?.textContent || 'Untitled';
         const videoUrl = videoLink.getAttribute('href') || '';
 
         const handler = () => {
@@ -628,12 +628,12 @@
         if (videoElement.querySelector('.fh-ignore-btn')) return;
 
         const videoId = videoElement.getAttribute('data-id');
-        const videoTitle = videoElement.querySelector('.t-tv')?.textContent || 'Без названия';
+        const videoTitle = videoElement.querySelector('.t-tv')?.textContent || 'Untitled';
         const videoUrl = videoElement.querySelector('.t-vl')?.getAttribute('href') || '';
 
         const ignoreBtn = document.createElement('div');
         ignoreBtn.className = 'fh-ignore-btn';
-        ignoreBtn.title = 'Игнорировать это видео';
+        ignoreBtn.title = 'Ignore this video';
         ignoreBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -657,7 +657,7 @@
 
         const blockBtn = document.createElement('span');
         blockBtn.className = 'fh-block-channel-btn';
-        blockBtn.title = `Заблокировать канал ${channelName}`;
+        blockBtn.title = `Block channel ${channelName}`;
         blockBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -668,7 +668,7 @@
         channelLink.parentElement.appendChild(blockBtn);
     }
 
-    // ==================== Фильтрация ====================
+    // ==================== Filtering ====================
 
     function filterVideos() {
         const videos = document.querySelectorAll('.thumb.tv');
@@ -753,7 +753,7 @@
         if (linkWatched) linkWatched.textContent = watchedVideos.length;
     }
 
-    // ==================== Модальные окна ====================
+    // ==================== Modals ====================
 
     function closeModal(modalId) {
         const modal = document.getElementById(modalId);
@@ -798,11 +798,11 @@
         modal.innerHTML = `
             <div class="fh-modal-content">
                 <div class="fh-modal-header">
-                    <h2>📝 Игнор-лист видео</h2>
+                    <h2>📝 Ignored videos</h2>
                     <button class="fh-modal-close">×</button>
                 </div>
                 <div class="fh-modal-actions">
-                    <button class="fh-btn" id="fh-clear-ignored" style="background: #ff4444;">🗑️ Очистить список</button>
+                    <button class="fh-btn" id="fh-clear-ignored" style="background: #ff4444;">🗑️ Clear list</button>
                 </div>
                 <ul class="fh-ignored-list" id="fh-ignored-list"></ul>
             </div>
@@ -821,7 +821,7 @@
         });
 
         document.getElementById('fh-clear-ignored').addEventListener('click', () => {
-            if (confirm(`Очистить игнор-лист видео?\n\nСейчас в списке: ${ignoredVideos.length} записей`)) {
+            if (confirm(`Clear the ignored videos list?\n\nEntries in the list: ${ignoredVideos.length}`)) {
                 ignoredVideos = [];
                 GM_setValue('ignoredVideos', ignoredVideos);
                 rebuildLookups();
@@ -846,11 +846,11 @@
         modal.innerHTML = `
             <div class="fh-modal-content">
                 <div class="fh-modal-header">
-                    <h2>🚫 Заблокированные каналы</h2>
+                    <h2>🚫 Blocked channels</h2>
                     <button class="fh-modal-close">×</button>
                 </div>
                 <div class="fh-modal-actions">
-                    <button class="fh-btn" id="fh-clear-channels" style="background: #ff4444;">🗑️ Очистить список</button>
+                    <button class="fh-btn" id="fh-clear-channels" style="background: #ff4444;">🗑️ Clear list</button>
                 </div>
                 <ul class="fh-ignored-list" id="fh-blocked-channels-list"></ul>
             </div>
@@ -869,7 +869,7 @@
         });
 
         document.getElementById('fh-clear-channels').addEventListener('click', () => {
-            if (confirm(`Очистить список каналов?\n\nСейчас в списке: ${blockedChannels.length} записей`)) {
+            if (confirm(`Clear the blocked channels list?\n\nEntries in the list: ${blockedChannels.length}`)) {
                 blockedChannels = [];
                 GM_setValue('blockedChannels', blockedChannels);
                 rebuildLookups();
@@ -894,12 +894,12 @@
         modal.innerHTML = `
             <div class="fh-modal-content">
                 <div class="fh-modal-header">
-                    <h2>👁️ Просмотренные видео</h2>
+                    <h2>👁️ Watched videos</h2>
                     <button class="fh-modal-close">×</button>
                 </div>
                 <div class="fh-modal-actions">
-                    <button class="fh-btn" id="fh-clear-watched" style="background: #ff4444;">🗑️ Очистить список</button>
-                    <button class="fh-btn" id="fh-import-history" style="background: #ff9800;">📥 Импорт из истории</button>
+                    <button class="fh-btn" id="fh-clear-watched" style="background: #ff4444;">🗑️ Clear list</button>
+                    <button class="fh-btn" id="fh-import-history" style="background: #ff9800;">📥 Import from history</button>
                 </div>
                 <input type="file" id="fh-file-input" accept=".csv,.txt" style="display: none;">
                 <ul class="fh-ignored-list" id="fh-watched-list"></ul>
@@ -919,7 +919,7 @@
         });
 
         document.getElementById('fh-clear-watched').addEventListener('click', () => {
-            if (confirm(`Очистить список просмотренных?\n\nСейчас в списке: ${watchedVideos.length} записей`)) {
+            if (confirm(`Clear the watched videos list?\n\nEntries in the list: ${watchedVideos.length}`)) {
                 watchedVideos = [];
                 GM_setValue('watchedVideos', watchedVideos);
                 rebuildLookups();
@@ -934,11 +934,11 @@
             fileInput.click();
         });
 
-        // Экспорт
+        // Export
         const exportBtn = document.createElement('button');
         exportBtn.className = 'fh-btn';
         exportBtn.style.background = '#4CAF50';
-        exportBtn.textContent = '📤 Экспорт';
+        exportBtn.textContent = '📤 Export';
         exportBtn.addEventListener('click', () => {
             const data = JSON.stringify(watchedVideos, null, 2);
             const blob = new Blob([data], {type: 'application/json'});
@@ -973,7 +973,7 @@
                         watchedVideos.push({
                             id: null,
                             code: videoCode,
-                            title: 'Импортировано из истории',
+                            title: 'Imported from history',
                             url: url.split('#')[0],
                             date: new Date().toISOString()
                         });
@@ -988,7 +988,7 @@
                 rebuildLookups();
                 filterVideos();
                 updateWatchedListModal();
-                alert(`Импорт завершён!\n\nДобавлено: ${imported}\nПропущено (дубликаты): ${skipped}\nВсего просмотренных: ${watchedVideos.length}`);
+                alert(`Import complete!\n\nAdded: ${imported}\nSkipped (duplicates): ${skipped}\nTotal watched: ${watchedVideos.length}`);
 
                 fileInput.value = '';
             };
@@ -1005,17 +1005,17 @@
         }, 100);
     }
 
-    // ==================== Обновление содержимого модалок ====================
+    // ==================== Modal content updates ====================
 
     function updateIgnoredListModal() {
         const list = document.getElementById('fh-ignored-list');
         const modal = document.getElementById('fh-ignored-modal');
         if (!list || !modal) return;
 
-        modal.querySelector('h2').textContent = `📝 Игнор-лист видео (${ignoredVideos.length})`;
+        modal.querySelector('h2').textContent = `📝 Ignored videos (${ignoredVideos.length})`;
 
         if (ignoredVideos.length === 0) {
-            list.innerHTML = '<div class="fh-empty-list">Список пуст</div>';
+            list.innerHTML = '<div class="fh-empty-list">The list is empty</div>';
             return;
         }
 
@@ -1024,7 +1024,7 @@
                 <div class="fh-ignored-item-title">
                     <a href="${escapeHtml(video.url)}" target="_blank">${escapeHtml(video.title)}</a>
                 </div>
-                <button class="fh-remove-btn" data-video-id="${escapeHtml(video.id)}">Удалить</button>
+                <button class="fh-remove-btn" data-video-id="${escapeHtml(video.id)}">Remove</button>
             </li>
         `).join('');
 
@@ -1042,10 +1042,10 @@
         const modal = document.getElementById('fh-blocked-channels-modal');
         if (!list || !modal) return;
 
-        modal.querySelector('h2').textContent = `🚫 Заблокированные каналы (${blockedChannels.length})`;
+        modal.querySelector('h2').textContent = `🚫 Blocked channels (${blockedChannels.length})`;
 
         if (blockedChannels.length === 0) {
-            list.innerHTML = '<div class="fh-empty-list">Список пуст</div>';
+            list.innerHTML = '<div class="fh-empty-list">The list is empty</div>';
             return;
         }
 
@@ -1054,7 +1054,7 @@
                 <div class="fh-ignored-item-title">
                     <a href="${escapeHtml(channel.url)}" target="_blank">${escapeHtml(channel.name)}</a>
                 </div>
-                <button class="fh-remove-btn" data-channel-name="${escapeHtml(channel.name)}">Удалить</button>
+                <button class="fh-remove-btn" data-channel-name="${escapeHtml(channel.name)}">Remove</button>
             </li>
         `).join('');
 
@@ -1072,10 +1072,10 @@
         const modal = document.getElementById('fh-watched-modal');
         if (!list || !modal) return;
 
-        modal.querySelector('h2').textContent = `👁️ Просмотренные видео (${watchedVideos.length})`;
+        modal.querySelector('h2').textContent = `👁️ Watched videos (${watchedVideos.length})`;
 
         if (watchedVideos.length === 0) {
-            list.innerHTML = '<div class="fh-empty-list">Список пуст</div>';
+            list.innerHTML = '<div class="fh-empty-list">The list is empty</div>';
             return;
         }
 
@@ -1086,12 +1086,12 @@
                 <div class="fh-ignored-item-title">
                     <a href="${escapeHtml(video.url)}" target="_blank">${escapeHtml(video.title)}</a>
                 </div>
-                <button class="fh-remove-btn" data-video-id="${escapeHtml(video.code || video.id || '')}">Убрать</button>
+                <button class="fh-remove-btn" data-video-id="${escapeHtml(video.code || video.id || '')}">Remove</button>
             </li>
         `).join('');
 
         if (watchedVideos.length > 100) {
-            list.innerHTML += `<div class="fh-empty-list">...и ещё ${watchedVideos.length - 100} видео</div>`;
+            list.innerHTML += `<div class="fh-empty-list">...and ${watchedVideos.length - 100} more</div>`;
         }
 
         list.querySelectorAll('.fh-remove-btn').forEach(btn => {
@@ -1103,7 +1103,7 @@
         });
     }
 
-    // ==================== Панель управления ====================
+    // ==================== Control panel ====================
 
     function updatePanelView() {
         const body = document.getElementById('fh-panel-body');
@@ -1113,7 +1113,7 @@
         if (body) body.style.display = expanded ? 'block' : 'none';
         if (btn) {
             btn.textContent = expanded ? '▼' : '▲';
-            btn.title = expanded ? 'Свернуть' : 'Развернуть';
+            btn.title = expanded ? 'Collapse' : 'Expand';
         }
     }
 
@@ -1153,20 +1153,20 @@
             <div id="fh-panel-body">
                 <div id="fh-toggles-block">
                     <div class="fh-head-row">
-                        <span>Скрыть</span>
-                        <span>Скрыто</span>
+                        <span>Hide</span>
+                        <span>Hidden</span>
                     </div>
                     <div class="fh-toggle fh-toggle_master">
                         <input type="checkbox" id="fh-master-toggle">
-                        <label for="fh-master-toggle">Все</label>
+                        <label for="fh-master-toggle">All</label>
                         <span class="fh-count" id="fh-cnt-total">0</span>
                     </div>
                     ${togglesHtml}
                 </div>
                 <div id="fh-lists-block">
-                    <button class="fh-list-link" id="fh-show-ignored">Игнор видео<span id="fh-link-ignored-count">${ignoredVideos.length}</span></button>
-                    <button class="fh-list-link" id="fh-show-blocked-channels">Игнор каналов<span id="fh-link-channels-count">${blockedChannels.length}</span></button>
-                    <button class="fh-list-link" id="fh-show-watched">Просмотрено<span id="fh-link-watched-count">${watchedVideos.length}</span></button>
+                    <button class="fh-list-link" id="fh-show-ignored">Ignored videos<span id="fh-link-ignored-count">${ignoredVideos.length}</span></button>
+                    <button class="fh-list-link" id="fh-show-blocked-channels">Blocked channels<span id="fh-link-channels-count">${blockedChannels.length}</span></button>
+                    <button class="fh-list-link" id="fh-show-watched">Watched<span id="fh-link-watched-count">${watchedVideos.length}</span></button>
                 </div>
             </div>
         `;
@@ -1209,7 +1209,7 @@
         updatePanelView();
     }
 
-    // ==================== Наблюдатель DOM ====================
+    // ==================== DOM observer ====================
 
     function observeVideoList() {
         const observer = new MutationObserver((mutations) => {
@@ -1233,7 +1233,7 @@
         });
     }
 
-    // ==================== Очистка БД ====================
+    // ==================== Data cleanup ====================
 
     function cleanupWatchedList() {
         const before = watchedVideos.length;
@@ -1255,7 +1255,7 @@
         }
     }
 
-    // ==================== Инициализация ====================
+    // ==================== Initialization ====================
 
     function getVideoId(thumb) {
         return thumb.getAttribute('data-id')
@@ -1283,7 +1283,7 @@
             if (!thumb) return;
 
             const id = getVideoId(thumb);
-            const title = thumb.querySelector('.t-tv')?.textContent || 'Без названия';
+            const title = thumb.querySelector('.t-tv')?.textContent || 'Untitled';
             const url = thumb.querySelector('.t-vl')?.getAttribute('href') || '';
 
             ignoreVideo(id, title, url);
