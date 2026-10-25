@@ -86,8 +86,7 @@ If the script is useful to you, you can support its development:
 
 ## Supported sites
 
-- `https://faphouse.com/*`
-- `https://ru.faphouse.com/*`
+- `https://faphouse.com/*` and every language subdomain (`ru.faphouse.com`, `de.faphouse.com`, …), matched by `https://*.faphouse.com/*`
 
 ## Notes
 

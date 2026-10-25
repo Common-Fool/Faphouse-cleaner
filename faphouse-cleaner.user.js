@@ -1,15 +1,14 @@
 // ==UserScript==
 // @name         FapHouse Premium Video Hider
 // @namespace    http://tampermonkey.net/
-// @version      1.9
+// @version      1.10
 // @description  Hide premium, paid, VR, ignored, blocked channels and watched videos from feed
 // @author       Common-Fool
 // @homepageURL  https://github.com/Common-Fool/Faphouse-cleaner
 // @supportURL   https://github.com/Common-Fool/Faphouse-cleaner/issues
 // @updateURL    https://raw.githubusercontent.com/Common-Fool/Faphouse-cleaner/main/faphouse-cleaner.user.js
 // @downloadURL  https://raw.githubusercontent.com/Common-Fool/Faphouse-cleaner/main/faphouse-cleaner.user.js
-// @match        https://faphouse.com/*
-// @match        https://ru.faphouse.com/*
+// @match        https://*.faphouse.com/*
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_addStyle
