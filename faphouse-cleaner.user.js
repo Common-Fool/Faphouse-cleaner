@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FapHouse Premium Video Hider
 // @namespace    http://tampermonkey.net/
-// @version      1.8
+// @version      1.9
 // @description  Hide premium, paid, VR, ignored, blocked channels and watched videos from feed
 // @author       Common-Fool
 // @homepageURL  https://github.com/Common-Fool/Faphouse-cleaner
@@ -34,6 +34,13 @@
     let watchedVideos = GM_getValue('watchedVideos', []);
     let panelState = GM_getValue('panelState', 1);
     if (panelState !== 0) panelState = 1;
+
+    // First automatic showing comes one interval after install
+    let donateLastShown = GM_getValue('donateLastShown', 0);
+    if (!donateLastShown) {
+        donateLastShown = Date.now();
+        GM_setValue('donateLastShown', donateLastShown);
+    }
 
     // ==================== Lookup indexes (Set) ====================
 
@@ -92,6 +99,24 @@
             if (remote) { setter(newVal); rebuildLookups(); filterVideos(); }
         });
     }
+
+    // Dismissing the donate banner in one tab hides it in the others
+    GM_addValueChangeListener('donateLastShown', (name, oldVal, newVal, remote) => {
+        if (remote) { donateLastShown = newVal; hideDonateBanner(); }
+    });
+
+    // ==================== Donations ====================
+
+    const DONATE_INTERVAL = 7 * 24 * 60 * 60 * 1000;
+
+    const donateLinks = [
+        { label: 'Monobank',   note: 'jar, any bank card', url: 'https://send.monobank.ua/jar/6m4nBQCW9B' },
+        { label: 'Ko-fi',      note: 'card, PayPal',       url: 'https://ko-fi.com/commonfool' },
+        { label: 'Crypto',     note: 'NOWPayments',        url: 'https://nowpayments.io/donation/commonfool' },
+    ];
+
+    // QR code for the Monobank jar link
+    const DONATE_QR_PATH = 'M0 0h7v1H0zM8 0h4v1H8zM15 0h2v1H15zM19 0h2v1H19zM22 0h7v1H22zM0 1h1v1H0zM6 1h1v1H6zM8 1h6v1H8zM16 1h3v1H16zM20 1h1v1H20zM22 1h1v1H22zM28 1h1v1H28zM0 2h1v1H0zM2 2h3v1H2zM6 2h1v1H6zM10 2h1v1H10zM12 2h1v1H12zM14 2h1v1H14zM16 2h1v1H16zM18 2h1v1H18zM20 2h1v1H20zM22 2h1v1H22zM24 2h3v1H24zM28 2h1v1H28zM0 3h1v1H0zM2 3h3v1H2zM6 3h1v1H6zM8 3h4v1H8zM17 3h1v1H17zM19 3h1v1H19zM22 3h1v1H22zM24 3h3v1H24zM28 3h1v1H28zM0 4h1v1H0zM2 4h3v1H2zM6 4h1v1H6zM9 4h1v1H9zM14 4h1v1H14zM17 4h1v1H17zM19 4h2v1H19zM22 4h1v1H22zM24 4h3v1H24zM28 4h1v1H28zM0 5h1v1H0zM6 5h1v1H6zM9 5h4v1H9zM14 5h1v1H14zM16 5h1v1H16zM19 5h2v1H19zM22 5h1v1H22zM28 5h1v1H28zM0 6h7v1H0zM8 6h1v1H8zM10 6h1v1H10zM12 6h1v1H12zM14 6h1v1H14zM16 6h1v1H16zM18 6h1v1H18zM20 6h1v1H20zM22 6h7v1H22zM8 7h2v1H8zM11 7h5v1H11zM17 7h4v1H17zM0 8h1v1H0zM2 8h2v1H2zM5 8h3v1H5zM9 8h2v1H9zM13 8h1v1H13zM17 8h1v1H17zM22 8h1v1H22zM25 8h1v1H25zM27 8h2v1H27zM2 9h1v1H2zM4 9h2v1H4zM10 9h1v1H10zM12 9h1v1H12zM17 9h6v1H17zM24 9h1v1H24zM28 9h1v1H28zM0 10h1v1H0zM3 10h2v1H3zM6 10h1v1H6zM9 10h2v1H9zM12 10h1v1H12zM14 10h1v1H14zM18 10h1v1H18zM20 10h4v1H20zM26 10h2v1H26zM0 11h1v1H0zM3 11h1v1H3zM8 11h2v1H8zM11 11h1v1H11zM13 11h1v1H13zM16 11h1v1H16zM18 11h1v1H18zM20 11h1v1H20zM23 11h1v1H23zM28 11h1v1H28zM1 12h6v1H1zM10 12h2v1H10zM15 12h1v1H15zM17 12h1v1H17zM19 12h1v1H19zM25 12h2v1H25zM0 13h1v1H0zM5 13h1v1H5zM8 13h8v1H8zM19 13h1v1H19zM22 13h1v1H22zM26 13h3v1H26zM0 14h1v1H0zM2 14h1v1H2zM5 14h3v1H5zM9 14h1v1H9zM11 14h1v1H11zM14 14h1v1H14zM16 14h2v1H16zM19 14h3v1H19zM24 14h1v1H24zM26 14h3v1H26zM1 15h3v1H1zM5 15h1v1H5zM8 15h1v1H8zM11 15h1v1H11zM13 15h1v1H13zM16 15h1v1H16zM18 15h1v1H18zM23 15h1v1H23zM27 15h1v1H27zM2 16h3v1H2zM6 16h2v1H6zM10 16h1v1H10zM15 16h1v1H15zM18 16h1v1H18zM20 16h2v1H20zM23 16h3v1H23zM27 16h1v1H27zM1 17h1v1H1zM4 17h2v1H4zM7 17h2v1H7zM11 17h3v1H11zM15 17h1v1H15zM20 17h1v1H20zM23 17h1v1H23zM25 17h3v1H25zM0 18h1v1H0zM2 18h2v1H2zM5 18h2v1H5zM9 18h1v1H9zM11 18h1v1H11zM15 18h1v1H15zM18 18h1v1H18zM22 18h3v1H22zM26 18h1v1H26zM4 19h2v1H4zM9 19h1v1H9zM11 19h1v1H11zM16 19h7v1H16zM26 19h1v1H26zM1 20h3v1H1zM5 20h2v1H5zM9 20h5v1H9zM17 20h10v1H17zM8 21h3v1H8zM12 21h3v1H12zM20 21h1v1H20zM24 21h5v1H24zM0 22h7v1H0zM8 22h2v1H8zM11 22h3v1H11zM16 22h1v1H16zM19 22h2v1H19zM22 22h1v1H22zM24 22h2v1H24zM27 22h1v1H27zM0 23h1v1H0zM6 23h1v1H6zM8 23h4v1H8zM20 23h1v1H20zM24 23h2v1H24zM27 23h2v1H27zM0 24h1v1H0zM2 24h3v1H2zM6 24h1v1H6zM9 24h1v1H9zM14 24h1v1H14zM17 24h2v1H17zM20 24h5v1H20zM26 24h2v1H26zM0 25h1v1H0zM2 25h3v1H2zM6 25h1v1H6zM8 25h1v1H8zM11 25h1v1H11zM13 25h4v1H13zM19 25h1v1H19zM21 25h1v1H21zM23 25h3v1H23zM28 25h1v1H28zM0 26h1v1H0zM2 26h3v1H2zM6 26h1v1H6zM8 26h1v1H8zM11 26h1v1H11zM16 26h3v1H16zM20 26h1v1H20zM23 26h1v1H23zM26 26h1v1H26zM28 26h1v1H28zM0 27h1v1H0zM6 27h1v1H6zM9 27h1v1H9zM11 27h1v1H11zM13 27h2v1H13zM16 27h1v1H16zM20 27h1v1H20zM22 27h2v1H22zM25 27h1v1H25zM27 27h1v1H27zM0 28h7v1H0zM8 28h1v1H8zM10 28h2v1H10zM14 28h1v1H14zM16 28h1v1H16zM19 28h2v1H19zM22 28h2v1H22zM25 28h1v1H25zM27 28h1v1H27z';
 
     // ==================== Utilities ====================
 
@@ -551,6 +576,119 @@
             text-align: center;
             color: #888;
             padding: 20px;
+        }
+
+        .fhc-list-link.fhc-support-link,
+        .fhc-list-link.fhc-support-link span {
+            color: #ff8fab;
+        }
+
+        .fhc-list-link.fhc-support-link:hover {
+            color: #ffb3c6;
+        }
+
+        #fhc-donate {
+            position: fixed;
+            bottom: 8px;
+            left: 8px;
+            width: 250px;
+            box-sizing: border-box;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 10px 12px;
+            z-index: 9999;
+            color: #ddd;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            text-align: left;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.5);
+        }
+
+        #fhc-donate * {
+            box-sizing: border-box;
+        }
+
+        #fhc-donate h4 {
+            margin: 0 18px 4px 0;
+            padding: 0;
+            font-size: 12px;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        #fhc-donate p {
+            margin: 0 0 8px 0;
+            padding: 0;
+            color: #aaa;
+        }
+
+        .fhc-donate-close {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: #777;
+            font-size: 16px;
+            font-family: inherit;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .fhc-donate-close:hover {
+            color: #fff;
+        }
+
+        .fhc-donate-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .fhc-donate-links {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        #fhc-donate a.fhc-donate-link {
+            display: block;
+            padding: 4px 7px;
+            background: #252525;
+            border-radius: 4px;
+            color: #00d4ff;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        #fhc-donate a.fhc-donate-link:hover {
+            background: #303030;
+        }
+
+        #fhc-donate a.fhc-donate-link small {
+            display: block;
+            font-size: 9px;
+            font-weight: normal;
+            color: #888;
+        }
+
+        .fhc-donate-qr {
+            flex: 0 0 auto;
+            text-align: center;
+            font-size: 9px;
+            color: #888;
+        }
+
+        .fhc-donate-qr svg {
+            display: block;
+            width: 86px;
+            height: 86px;
+            margin-bottom: 2px;
+            border-radius: 3px;
         }
     `);
 
@@ -1167,6 +1305,7 @@
                     <button class="fhc-list-link" id="fhc-show-ignored">Ignored videos<span id="fhc-link-ignored-count">${ignoredVideos.length}</span></button>
                     <button class="fhc-list-link" id="fhc-show-blocked-channels">Blocked channels<span id="fhc-link-channels-count">${blockedChannels.length}</span></button>
                     <button class="fhc-list-link" id="fhc-show-watched">Watched<span id="fhc-link-watched-count">${watchedVideos.length}</span></button>
+                    <button class="fhc-list-link fhc-support-link" id="fhc-show-donate">Support the project<span>♥</span></button>
                 </div>
             </div>
         `;
@@ -1204,9 +1343,57 @@
         document.getElementById('fhc-show-ignored').addEventListener('click', () => openModal('fhc-ignored-modal'));
         document.getElementById('fhc-show-blocked-channels').addEventListener('click', () => openModal('fhc-blocked-channels-modal'));
         document.getElementById('fhc-show-watched').addEventListener('click', () => openModal('fhc-watched-modal'));
+        document.getElementById('fhc-show-donate').addEventListener('click', showDonateBanner);
 
         updateMasterToggle();
         updatePanelView();
+    }
+
+    // ==================== Donate banner ====================
+
+    function showDonateBanner() {
+        if (document.getElementById('fhc-donate')) return;
+
+        const linksHtml = donateLinks.map(l => `
+            <a class="fhc-donate-link" href="${l.url}" target="_blank" rel="noopener">${l.label}<small>${l.note}</small></a>
+        `).join('');
+
+        const banner = document.createElement('div');
+        banner.id = 'fhc-donate';
+        banner.innerHTML = `
+            <button class="fhc-donate-close" title="Close">×</button>
+            <h4>♥ Enjoying FapHouse Cleaner?</h4>
+            <p>It's free and kept up to date in my spare time. If it saves you some scrolling, consider buying me a coffee.</p>
+            <div class="fhc-donate-row">
+                <div class="fhc-donate-links">${linksHtml}</div>
+                <div class="fhc-donate-qr">
+                    <svg viewBox="-2 -2 33 33" shape-rendering="crispEdges"><rect x="-2" y="-2" width="33" height="33" fill="#fff"/><path d="${DONATE_QR_PATH}" fill="#000"/></svg>
+                    Monobank
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(banner);
+
+        // Closing or following any link postpones the next showing by a full interval
+        const dismiss = () => {
+            donateLastShown = Date.now();
+            GM_setValue('donateLastShown', donateLastShown);
+        };
+
+        banner.querySelector('.fhc-donate-close').addEventListener('click', () => {
+            dismiss();
+            hideDonateBanner();
+        });
+        banner.querySelectorAll('.fhc-donate-link').forEach(a => a.addEventListener('click', dismiss));
+    }
+
+    function hideDonateBanner() {
+        document.getElementById('fhc-donate')?.remove();
+    }
+
+    function maybeShowDonateBanner() {
+        if (Date.now() - donateLastShown >= DONATE_INTERVAL) showDonateBanner();
     }
 
     // ==================== DOM observer ====================
@@ -1303,6 +1490,7 @@
         filterVideos();
         installIgnoreDelegate();
         observeVideoList();
+        maybeShowDonateBanner();
     }
 
     if (document.readyState === 'loading') {

@@ -68,6 +68,21 @@ In each window you can open an entry, remove a single entry, or clear the whole 
 - **Sync between tabs**: settings and lists update live in every open FapHouse tab.
 - **Infinite scroll support**: newly loaded videos are filtered as they appear.
 - **Local storage only**: all data is kept in your userscript manager's storage and never leaves your browser.
+- **Donation reminder**: about once a week a small banner in the bottom-left corner suggests supporting the project. Closing it or following one of its links hides it for another week. You can also open it any time with **Support the project** in the panel.
+
+## Support the project
+
+If the script is useful to you, you can support its development:
+
+<p align="center">
+  <img src="screenshots/donate.png" alt="Donation banner" width="250">
+</p>
+
+| Method | Link |
+|---|---|
+| Monobank (jar, any bank card) | [send.monobank.ua/jar/6m4nBQCW9B](https://send.monobank.ua/jar/6m4nBQCW9B) |
+| Ko-fi | [ko-fi.com/commonfool](https://ko-fi.com/commonfool) |
+| Crypto (NOWPayments) | [nowpayments.io/donation/commonfool](https://nowpayments.io/donation/commonfool) |
 
 ## Supported sites
 
