@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         FapHouse Premium Video Hider
 // @namespace    http://tampermonkey.net/
-// @version      1.7
+// @version      1.8
 // @description  Hide premium, paid, VR, ignored, blocked channels and watched videos from feed
 // @author       Common-Fool
 // @homepageURL  https://github.com/Common-Fool/Faphouse-cleaner
@@ -66,13 +66,13 @@
     const AD_SELECTOR = '.header-banner, .moments-main-page, .exclusive-scenes-section__container';
 
     const toggleDefs = [
-        { id: 'fh-premium-toggle',          countId: 'fh-cnt-premium',  key: 'hidePremium',         label: 'Premium',        get: () => hidePremium },
-        { id: 'fh-paid-toggle',             countId: 'fh-cnt-paid',     key: 'hidePaid',            label: 'Paid',           get: () => hidePaid },
-        { id: 'fh-vr-toggle',               countId: 'fh-cnt-vr',       key: 'hideVR',              label: 'VR',             get: () => hideVR },
-        { id: 'fh-ignored-toggle',          countId: 'fh-cnt-ignored',  key: 'hideIgnored',         label: 'Ignored',        get: () => hideIgnored },
-        { id: 'fh-blocked-channels-toggle', countId: 'fh-cnt-channels', key: 'hideBlockedChannels', label: 'Channels',       get: () => hideBlockedChannels },
-        { id: 'fh-watched-toggle',          countId: 'fh-cnt-watched',  key: 'hideWatched',         label: 'Watched',        get: () => hideWatched },
-        { id: 'fh-ads-toggle',              countId: 'fh-cnt-ads',      key: 'hideAds',             label: 'Ads',            get: () => hideAds },
+        { id: 'fhc-premium-toggle',          countId: 'fhc-cnt-premium',  key: 'hidePremium',         label: 'Premium',        get: () => hidePremium },
+        { id: 'fhc-paid-toggle',             countId: 'fhc-cnt-paid',     key: 'hidePaid',            label: 'Paid',           get: () => hidePaid },
+        { id: 'fhc-vr-toggle',               countId: 'fhc-cnt-vr',       key: 'hideVR',              label: 'VR',             get: () => hideVR },
+        { id: 'fhc-ignored-toggle',          countId: 'fhc-cnt-ignored',  key: 'hideIgnored',         label: 'Ignored',        get: () => hideIgnored },
+        { id: 'fhc-blocked-channels-toggle', countId: 'fhc-cnt-channels', key: 'hideBlockedChannels', label: 'Channels',       get: () => hideBlockedChannels },
+        { id: 'fhc-watched-toggle',          countId: 'fhc-cnt-watched',  key: 'hideWatched',         label: 'Watched',        get: () => hideWatched },
+        { id: 'fhc-ads-toggle',              countId: 'fhc-cnt-ads',      key: 'hideAds',             label: 'Ads',            get: () => hideAds },
     ];
 
     for (const [key, setter] of Object.entries(toggleKeys)) {
@@ -123,17 +123,17 @@
     // ==================== Styles ====================
 
     GM_addStyle(`
-        .fh-hidden {
+        .fhc-hidden {
             display: none !important;
         }
 
-        html.fh-hide-ads .header-banner,
-        html.fh-hide-ads .moments-main-page,
-        html.fh-hide-ads .exclusive-scenes-section__container {
+        html.fhc-hide-ads .header-banner,
+        html.fhc-hide-ads .moments-main-page,
+        html.fhc-hide-ads .exclusive-scenes-section__container {
             display: none !important;
         }
 
-        #fh-control-panel {
+        #fhc-control-panel {
             position: fixed;
             bottom: 8px;
             right: 8px;
@@ -154,12 +154,12 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.5);
         }
 
-        #fh-control-panel * {
+        #fhc-control-panel * {
             box-sizing: border-box;
             text-align: left;
         }
 
-        #fh-control-panel h3 {
+        #fhc-control-panel h3 {
             margin: 0;
             padding: 0;
             font-size: 11px;
@@ -172,7 +172,7 @@
             white-space: nowrap;
         }
 
-        #fh-control-panel h3 .fh-collapse-btn {
+        #fhc-control-panel h3 .fhc-collapse-btn {
             background: none;
             border: none;
             color: #00d4ff;
@@ -184,15 +184,15 @@
             line-height: 1;
         }
 
-        #fh-control-panel h3 .fh-collapse-btn:hover {
+        #fhc-control-panel h3 .fhc-collapse-btn:hover {
             color: #fff;
         }
 
-        #fh-panel-body {
+        #fhc-panel-body {
             margin-top: 6px;
         }
 
-        .fh-head-row {
+        .fhc-head-row {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
@@ -204,7 +204,7 @@
             border-bottom: 1px solid #2a2a2a;
         }
 
-        .fh-toggle {
+        .fhc-toggle {
             display: flex;
             align-items: center;
             gap: 6px;
@@ -214,13 +214,13 @@
             user-select: none;
         }
 
-        .fh-toggle_master {
+        .fhc-toggle_master {
             padding-bottom: 4px;
             margin-bottom: 3px;
             border-bottom: 1px solid #2a2a2a;
         }
 
-        .fh-toggle label {
+        .fhc-toggle label {
             cursor: pointer;
             font-size: 11px;
             font-family: inherit;
@@ -231,11 +231,11 @@
             text-overflow: ellipsis;
         }
 
-        .fh-toggle_master label {
+        .fhc-toggle_master label {
             color: #ddd;
         }
 
-        #fh-control-panel .fh-count {
+        #fhc-control-panel .fhc-count {
             flex: 0 0 auto;
             min-width: 16px;
             font-size: 11px;
@@ -243,12 +243,12 @@
             text-align: right;
         }
 
-        #fh-control-panel .fh-toggle_master .fh-count {
+        #fhc-control-panel .fhc-toggle_master .fhc-count {
             color: #00d4ff;
             font-weight: bold;
         }
 
-        #fh-control-panel input[type="checkbox"] {
+        #fhc-control-panel input[type="checkbox"] {
             appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -264,16 +264,16 @@
             position: relative;
         }
 
-        #fh-control-panel input[type="checkbox"]:hover {
+        #fhc-control-panel input[type="checkbox"]:hover {
             border-color: #00d4ff;
         }
 
-        #fh-control-panel input[type="checkbox"]:checked {
+        #fhc-control-panel input[type="checkbox"]:checked {
             background: #00d4ff;
             border-color: #00d4ff;
         }
 
-        #fh-control-panel input[type="checkbox"]:checked::after {
+        #fhc-control-panel input[type="checkbox"]:checked::after {
             content: '';
             position: absolute;
             left: 3px;
@@ -285,12 +285,12 @@
             transform: rotate(45deg);
         }
 
-        #fh-control-panel input[type="checkbox"]:indeterminate {
+        #fhc-control-panel input[type="checkbox"]:indeterminate {
             background: #101010;
             border-color: #00d4ff;
         }
 
-        #fh-control-panel input[type="checkbox"]:indeterminate::after {
+        #fhc-control-panel input[type="checkbox"]:indeterminate::after {
             content: '';
             position: absolute;
             left: 2px;
@@ -301,13 +301,13 @@
             background: #00d4ff;
         }
 
-        #fh-lists-block {
+        #fhc-lists-block {
             margin-top: 6px;
             padding-top: 5px;
             border-top: 1px solid #2a2a2a;
         }
 
-        .fh-btn {
+        .fhc-btn {
             background: #00d4ff;
             color: #000;
             border: none;
@@ -320,11 +320,11 @@
             font-weight: bold;
         }
 
-        .fh-btn:hover {
+        .fhc-btn:hover {
             background: #00b8e6;
         }
 
-        .fh-list-link {
+        .fhc-list-link {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
@@ -342,15 +342,15 @@
             transition: color 0.2s;
         }
 
-        .fh-list-link:hover {
+        .fhc-list-link:hover {
             color: #00d4ff;
         }
 
-        .fh-list-link span {
+        .fhc-list-link span {
             color: #00d4ff;
         }
 
-        .fh-ignore-btn {
+        .fhc-ignore-btn {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -368,17 +368,17 @@
             justify-content: center;
         }
 
-        .thumb.tv:hover .fh-ignore-btn {
+        .thumb.tv:hover .fhc-ignore-btn {
             opacity: 1;
         }
 
-        .fh-ignore-btn:hover {
+        .fhc-ignore-btn:hover {
             background: rgba(0, 0, 0, 0.8);
             border-color: rgba(255, 255, 255, 0.6);
         }
 
-        .fh-ignore-btn::before,
-        .fh-ignore-btn::after {
+        .fhc-ignore-btn::before,
+        .fhc-ignore-btn::after {
             content: '';
             position: absolute;
             width: 32px;
@@ -386,10 +386,10 @@
             background: #fff;
         }
 
-        .fh-ignore-btn::before { transform: rotate(45deg); }
-        .fh-ignore-btn::after { transform: rotate(-45deg); }
+        .fhc-ignore-btn::before { transform: rotate(45deg); }
+        .fhc-ignore-btn::after { transform: rotate(-45deg); }
 
-        .fh-block-channel-btn {
+        .fhc-block-channel-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -406,17 +406,17 @@
             position: relative;
         }
 
-        .t-ti:hover .fh-block-channel-btn {
+        .t-ti:hover .fhc-block-channel-btn {
             opacity: 1;
         }
 
-        .fh-block-channel-btn:hover {
+        .fhc-block-channel-btn:hover {
             background: rgba(0, 0, 0, 0.8);
             border-color: rgba(255, 255, 255, 0.6);
         }
 
-        .fh-block-channel-btn::before,
-        .fh-block-channel-btn::after {
+        .fhc-block-channel-btn::before,
+        .fhc-block-channel-btn::after {
             content: '';
             position: absolute;
             width: 10px;
@@ -424,10 +424,10 @@
             background: #fff;
         }
 
-        .fh-block-channel-btn::before { transform: rotate(45deg); }
-        .fh-block-channel-btn::after { transform: rotate(-45deg); }
+        .fhc-block-channel-btn::before { transform: rotate(45deg); }
+        .fhc-block-channel-btn::after { transform: rotate(-45deg); }
 
-        .fh-modal {
+        .fhc-modal {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
@@ -442,13 +442,13 @@
             pointer-events: none !important;
         }
 
-        .fh-modal.active {
+        .fhc-modal.active {
             display: flex !important;
             visibility: visible !important;
             pointer-events: auto !important;
         }
 
-        .fh-modal-content {
+        .fhc-modal-content {
             background: #1a1a1a !important;
             border: 2px solid #333 !important;
             border-radius: 8px !important;
@@ -462,20 +462,20 @@
             position: relative !important;
         }
 
-        .fh-modal-header {
+        .fhc-modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
 
-        .fh-modal-header h2 {
+        .fhc-modal-header h2 {
             margin: 0;
             font-size: 18px;
             color: #00d4ff;
         }
 
-        .fh-modal-close {
+        .fhc-modal-close {
             background: #ff4444;
             color: #fff;
             border: none;
@@ -487,28 +487,28 @@
             line-height: 1;
         }
 
-        .fh-modal-close:hover {
+        .fhc-modal-close:hover {
             background: #ff6666;
         }
 
-        .fh-modal-actions {
+        .fhc-modal-actions {
             margin-bottom: 15px;
             display: flex;
             gap: 10px;
         }
 
-        .fh-modal-actions .fh-btn {
+        .fhc-modal-actions .fhc-btn {
             margin-top: 0;
             width: auto;
         }
 
-        .fh-ignored-list {
+        .fhc-ignored-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        .fh-ignored-item {
+        .fhc-ignored-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -518,22 +518,22 @@
             border-radius: 4px;
         }
 
-        .fh-ignored-item-title {
+        .fhc-ignored-item-title {
             flex: 1;
             font-size: 13px;
             margin-right: 10px;
         }
 
-        .fh-ignored-item-title a {
+        .fhc-ignored-item-title a {
             color: #00d4ff;
             text-decoration: none;
         }
 
-        .fh-ignored-item-title a:hover {
+        .fhc-ignored-item-title a:hover {
             text-decoration: underline;
         }
 
-        .fh-remove-btn {
+        .fhc-remove-btn {
             background: #ff4444;
             color: #fff;
             border: none;
@@ -543,11 +543,11 @@
             font-size: 11px;
         }
 
-        .fh-remove-btn:hover {
+        .fhc-remove-btn:hover {
             background: #ff6666;
         }
 
-        .fh-empty-list {
+        .fhc-empty-list {
             text-align: center;
             color: #888;
             padding: 20px;
@@ -608,8 +608,8 @@
 
     function addClickWatcher(videoElement) {
         const videoLink = videoElement.querySelector('.t-vl');
-        if (!videoLink || videoLink.dataset.fhWatcherAdded) return;
-        videoLink.dataset.fhWatcherAdded = 'true';
+        if (!videoLink || videoLink.dataset.fhcWatcherAdded) return;
+        videoLink.dataset.fhcWatcherAdded = 'true';
 
         const videoId = videoElement.getAttribute('data-id');
         const videoTitle = videoElement.querySelector('.t-tv')?.textContent || 'Untitled';
@@ -617,7 +617,7 @@
 
         const handler = () => {
             markAsWatched(videoId, videoTitle, videoUrl);
-            setTimeout(() => { if (hideWatched) videoElement.classList.add('fh-hidden'); }, 100);
+            setTimeout(() => { if (hideWatched) videoElement.classList.add('fhc-hidden'); }, 100);
         };
 
         videoLink.addEventListener('click', handler);
@@ -625,20 +625,20 @@
     }
 
     function addIgnoreButton(videoElement) {
-        if (videoElement.querySelector('.fh-ignore-btn')) return;
+        if (videoElement.querySelector('.fhc-ignore-btn')) return;
 
         const videoId = videoElement.getAttribute('data-id');
         const videoTitle = videoElement.querySelector('.t-tv')?.textContent || 'Untitled';
         const videoUrl = videoElement.querySelector('.t-vl')?.getAttribute('href') || '';
 
         const ignoreBtn = document.createElement('div');
-        ignoreBtn.className = 'fh-ignore-btn';
+        ignoreBtn.className = 'fhc-ignore-btn';
         ignoreBtn.title = 'Ignore this video';
         ignoreBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             ignoreVideo(videoId, videoTitle, videoUrl);
-            videoElement.classList.add('fh-hidden');
+            videoElement.classList.add('fhc-hidden');
         });
 
         const thumbMedia = videoElement.querySelector('.t-m');
@@ -650,19 +650,19 @@
 
     function addBlockChannelButton(videoElement) {
         const channelLink = videoElement.querySelector('.t-ti-s');
-        if (!channelLink || channelLink.parentElement.querySelector('.fh-block-channel-btn')) return;
+        if (!channelLink || channelLink.parentElement.querySelector('.fhc-block-channel-btn')) return;
 
         const channelName = channelLink.textContent.trim();
         const channelUrl = channelLink.getAttribute('href') || '';
 
         const blockBtn = document.createElement('span');
-        blockBtn.className = 'fh-block-channel-btn';
+        blockBtn.className = 'fhc-block-channel-btn';
         blockBtn.title = `Block channel ${channelName}`;
         blockBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
             blockChannel(channelName, channelUrl);
-            videoElement.classList.add('fh-hidden');
+            videoElement.classList.add('fhc-hidden');
         });
 
         channelLink.parentElement.appendChild(blockBtn);
@@ -700,7 +700,7 @@
             else if (isWatched && hideWatched)          { shouldHide = true; hideReason = 'watched'; }
 
             if (shouldHide) {
-                video.classList.add('fh-hidden');
+                video.classList.add('fhc-hidden');
                 if (hideReason === 'premium') hiddenPremium++;
                 else if (hideReason === 'paid') hiddenPaid++;
                 else if (hideReason === 'vr') hiddenVR++;
@@ -708,7 +708,7 @@
                 else if (hideReason === 'channel') hiddenByChannel++;
                 else if (hideReason === 'watched') hiddenWatched++;
             } else {
-                video.classList.remove('fh-hidden');
+                video.classList.remove('fhc-hidden');
             }
 
             addIgnoreButton(video);
@@ -721,9 +721,9 @@
     }
 
     function applyAdsVisibility() {
-        document.documentElement.classList.toggle('fh-hide-ads', hideAds);
+        document.documentElement.classList.toggle('fhc-hide-ads', hideAds);
 
-        const el = document.getElementById('fh-cnt-ads');
+        const el = document.getElementById('fhc-cnt-ads');
         if (el) el.textContent = hideAds ? document.querySelectorAll(AD_SELECTOR).length : 0;
     }
 
@@ -731,13 +731,13 @@
         const total = hiddenPremium + hiddenPaid + hiddenVR + hiddenIgnored + hiddenByChannel + hiddenWatched;
 
         const counts = {
-            'fh-cnt-total':    total,
-            'fh-cnt-premium':  hiddenPremium,
-            'fh-cnt-paid':     hiddenPaid,
-            'fh-cnt-vr':       hiddenVR,
-            'fh-cnt-ignored':  hiddenIgnored,
-            'fh-cnt-channels': hiddenByChannel,
-            'fh-cnt-watched':  hiddenWatched,
+            'fhc-cnt-total':    total,
+            'fhc-cnt-premium':  hiddenPremium,
+            'fhc-cnt-paid':     hiddenPaid,
+            'fhc-cnt-vr':       hiddenVR,
+            'fhc-cnt-ignored':  hiddenIgnored,
+            'fhc-cnt-channels': hiddenByChannel,
+            'fhc-cnt-watched':  hiddenWatched,
         };
 
         for (const [id, value] of Object.entries(counts)) {
@@ -745,9 +745,9 @@
             if (el) el.textContent = value;
         }
 
-        const linkIgnored = document.getElementById('fh-link-ignored-count');
-        const linkChannels = document.getElementById('fh-link-channels-count');
-        const linkWatched = document.getElementById('fh-link-watched-count');
+        const linkIgnored = document.getElementById('fhc-link-ignored-count');
+        const linkChannels = document.getElementById('fhc-link-channels-count');
+        const linkWatched = document.getElementById('fhc-link-watched-count');
         if (linkIgnored) linkIgnored.textContent = ignoredVideos.length;
         if (linkChannels) linkChannels.textContent = blockedChannels.length;
         if (linkWatched) linkWatched.textContent = watchedVideos.length;
@@ -768,7 +768,7 @@
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         if (modal) {
-            const content = modal.querySelector('.fh-modal-content');
+            const content = modal.querySelector('.fhc-modal-content');
 
             modal.style.setProperty('display', 'flex', 'important');
             modal.style.setProperty('visibility', 'visible', 'important');
@@ -781,11 +781,11 @@
 
             modal.classList.add('active');
 
-            if (modalId === 'fh-ignored-modal') {
+            if (modalId === 'fhc-ignored-modal') {
                 updateIgnoredListModal();
-            } else if (modalId === 'fh-blocked-channels-modal') {
+            } else if (modalId === 'fhc-blocked-channels-modal') {
                 updateBlockedChannelsModal();
-            } else if (modalId === 'fh-watched-modal') {
+            } else if (modalId === 'fhc-watched-modal') {
                 updateWatchedListModal();
             }
         }
@@ -793,34 +793,34 @@
 
     function createIgnoredListModal() {
         const modal = document.createElement('div');
-        modal.className = 'fh-modal';
-        modal.id = 'fh-ignored-modal';
+        modal.className = 'fhc-modal';
+        modal.id = 'fhc-ignored-modal';
         modal.innerHTML = `
-            <div class="fh-modal-content">
-                <div class="fh-modal-header">
+            <div class="fhc-modal-content">
+                <div class="fhc-modal-header">
                     <h2>📝 Ignored videos</h2>
-                    <button class="fh-modal-close">×</button>
+                    <button class="fhc-modal-close">×</button>
                 </div>
-                <div class="fh-modal-actions">
-                    <button class="fh-btn" id="fh-clear-ignored" style="background: #ff4444;">🗑️ Clear list</button>
+                <div class="fhc-modal-actions">
+                    <button class="fhc-btn" id="fhc-clear-ignored" style="background: #ff4444;">🗑️ Clear list</button>
                 </div>
-                <ul class="fh-ignored-list" id="fh-ignored-list"></ul>
+                <ul class="fhc-ignored-list" id="fhc-ignored-list"></ul>
             </div>
         `;
 
         document.body.appendChild(modal);
 
-        modal.querySelector('.fh-modal-close').addEventListener('click', (e) => {
+        modal.querySelector('.fhc-modal-close').addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            closeModal('fh-ignored-modal');
+            closeModal('fhc-ignored-modal');
         });
 
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal('fh-ignored-modal');
+            if (e.target === modal) closeModal('fhc-ignored-modal');
         });
 
-        document.getElementById('fh-clear-ignored').addEventListener('click', () => {
+        document.getElementById('fhc-clear-ignored').addEventListener('click', () => {
             if (confirm(`Clear the ignored videos list?\n\nEntries in the list: ${ignoredVideos.length}`)) {
                 ignoredVideos = [];
                 GM_setValue('ignoredVideos', ignoredVideos);
@@ -841,34 +841,34 @@
 
     function createBlockedChannelsModal() {
         const modal = document.createElement('div');
-        modal.className = 'fh-modal';
-        modal.id = 'fh-blocked-channels-modal';
+        modal.className = 'fhc-modal';
+        modal.id = 'fhc-blocked-channels-modal';
         modal.innerHTML = `
-            <div class="fh-modal-content">
-                <div class="fh-modal-header">
+            <div class="fhc-modal-content">
+                <div class="fhc-modal-header">
                     <h2>🚫 Blocked channels</h2>
-                    <button class="fh-modal-close">×</button>
+                    <button class="fhc-modal-close">×</button>
                 </div>
-                <div class="fh-modal-actions">
-                    <button class="fh-btn" id="fh-clear-channels" style="background: #ff4444;">🗑️ Clear list</button>
+                <div class="fhc-modal-actions">
+                    <button class="fhc-btn" id="fhc-clear-channels" style="background: #ff4444;">🗑️ Clear list</button>
                 </div>
-                <ul class="fh-ignored-list" id="fh-blocked-channels-list"></ul>
+                <ul class="fhc-ignored-list" id="fhc-blocked-channels-list"></ul>
             </div>
         `;
 
         document.body.appendChild(modal);
 
-        modal.querySelector('.fh-modal-close').addEventListener('click', (e) => {
+        modal.querySelector('.fhc-modal-close').addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            closeModal('fh-blocked-channels-modal');
+            closeModal('fhc-blocked-channels-modal');
         });
 
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal('fh-blocked-channels-modal');
+            if (e.target === modal) closeModal('fhc-blocked-channels-modal');
         });
 
-        document.getElementById('fh-clear-channels').addEventListener('click', () => {
+        document.getElementById('fhc-clear-channels').addEventListener('click', () => {
             if (confirm(`Clear the blocked channels list?\n\nEntries in the list: ${blockedChannels.length}`)) {
                 blockedChannels = [];
                 GM_setValue('blockedChannels', blockedChannels);
@@ -889,36 +889,36 @@
 
     function createWatchedListModal() {
         const modal = document.createElement('div');
-        modal.className = 'fh-modal';
-        modal.id = 'fh-watched-modal';
+        modal.className = 'fhc-modal';
+        modal.id = 'fhc-watched-modal';
         modal.innerHTML = `
-            <div class="fh-modal-content">
-                <div class="fh-modal-header">
+            <div class="fhc-modal-content">
+                <div class="fhc-modal-header">
                     <h2>👁️ Watched videos</h2>
-                    <button class="fh-modal-close">×</button>
+                    <button class="fhc-modal-close">×</button>
                 </div>
-                <div class="fh-modal-actions">
-                    <button class="fh-btn" id="fh-clear-watched" style="background: #ff4444;">🗑️ Clear list</button>
-                    <button class="fh-btn" id="fh-import-history" style="background: #ff9800;">📥 Import from history</button>
+                <div class="fhc-modal-actions">
+                    <button class="fhc-btn" id="fhc-clear-watched" style="background: #ff4444;">🗑️ Clear list</button>
+                    <button class="fhc-btn" id="fhc-import-history" style="background: #ff9800;">📥 Import from history</button>
                 </div>
-                <input type="file" id="fh-file-input" accept=".csv,.txt" style="display: none;">
-                <ul class="fh-ignored-list" id="fh-watched-list"></ul>
+                <input type="file" id="fhc-file-input" accept=".csv,.txt" style="display: none;">
+                <ul class="fhc-ignored-list" id="fhc-watched-list"></ul>
             </div>
         `;
 
         document.body.appendChild(modal);
 
-        modal.querySelector('.fh-modal-close').addEventListener('click', (e) => {
+        modal.querySelector('.fhc-modal-close').addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            closeModal('fh-watched-modal');
+            closeModal('fhc-watched-modal');
         });
 
         modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal('fh-watched-modal');
+            if (e.target === modal) closeModal('fhc-watched-modal');
         });
 
-        document.getElementById('fh-clear-watched').addEventListener('click', () => {
+        document.getElementById('fhc-clear-watched').addEventListener('click', () => {
             if (confirm(`Clear the watched videos list?\n\nEntries in the list: ${watchedVideos.length}`)) {
                 watchedVideos = [];
                 GM_setValue('watchedVideos', watchedVideos);
@@ -928,15 +928,15 @@
             }
         });
 
-        const fileInput = document.getElementById('fh-file-input');
+        const fileInput = document.getElementById('fhc-file-input');
 
-        document.getElementById('fh-import-history').addEventListener('click', () => {
+        document.getElementById('fhc-import-history').addEventListener('click', () => {
             fileInput.click();
         });
 
         // Export
         const exportBtn = document.createElement('button');
-        exportBtn.className = 'fh-btn';
+        exportBtn.className = 'fhc-btn';
         exportBtn.style.background = '#4CAF50';
         exportBtn.textContent = '📤 Export';
         exportBtn.addEventListener('click', () => {
@@ -949,7 +949,7 @@
             a.click();
             setTimeout(() => URL.revokeObjectURL(url), 1000);
         });
-        document.querySelector('#fh-watched-modal .fh-modal-actions').appendChild(exportBtn);
+        document.querySelector('#fhc-watched-modal .fhc-modal-actions').appendChild(exportBtn);
 
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -1008,27 +1008,27 @@
     // ==================== Modal content updates ====================
 
     function updateIgnoredListModal() {
-        const list = document.getElementById('fh-ignored-list');
-        const modal = document.getElementById('fh-ignored-modal');
+        const list = document.getElementById('fhc-ignored-list');
+        const modal = document.getElementById('fhc-ignored-modal');
         if (!list || !modal) return;
 
         modal.querySelector('h2').textContent = `📝 Ignored videos (${ignoredVideos.length})`;
 
         if (ignoredVideos.length === 0) {
-            list.innerHTML = '<div class="fh-empty-list">The list is empty</div>';
+            list.innerHTML = '<div class="fhc-empty-list">The list is empty</div>';
             return;
         }
 
         list.innerHTML = ignoredVideos.map(video => `
-            <li class="fh-ignored-item">
-                <div class="fh-ignored-item-title">
+            <li class="fhc-ignored-item">
+                <div class="fhc-ignored-item-title">
                     <a href="${escapeHtml(video.url)}" target="_blank">${escapeHtml(video.title)}</a>
                 </div>
-                <button class="fh-remove-btn" data-video-id="${escapeHtml(video.id)}">Remove</button>
+                <button class="fhc-remove-btn" data-video-id="${escapeHtml(video.id)}">Remove</button>
             </li>
         `).join('');
 
-        list.querySelectorAll('.fh-remove-btn').forEach(btn => {
+        list.querySelectorAll('.fhc-remove-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1038,27 +1038,27 @@
     }
 
     function updateBlockedChannelsModal() {
-        const list = document.getElementById('fh-blocked-channels-list');
-        const modal = document.getElementById('fh-blocked-channels-modal');
+        const list = document.getElementById('fhc-blocked-channels-list');
+        const modal = document.getElementById('fhc-blocked-channels-modal');
         if (!list || !modal) return;
 
         modal.querySelector('h2').textContent = `🚫 Blocked channels (${blockedChannels.length})`;
 
         if (blockedChannels.length === 0) {
-            list.innerHTML = '<div class="fh-empty-list">The list is empty</div>';
+            list.innerHTML = '<div class="fhc-empty-list">The list is empty</div>';
             return;
         }
 
         list.innerHTML = blockedChannels.map(channel => `
-            <li class="fh-ignored-item">
-                <div class="fh-ignored-item-title">
+            <li class="fhc-ignored-item">
+                <div class="fhc-ignored-item-title">
                     <a href="${escapeHtml(channel.url)}" target="_blank">${escapeHtml(channel.name)}</a>
                 </div>
-                <button class="fh-remove-btn" data-channel-name="${escapeHtml(channel.name)}">Remove</button>
+                <button class="fhc-remove-btn" data-channel-name="${escapeHtml(channel.name)}">Remove</button>
             </li>
         `).join('');
 
-        list.querySelectorAll('.fh-remove-btn').forEach(btn => {
+        list.querySelectorAll('.fhc-remove-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1068,33 +1068,33 @@
     }
 
     function updateWatchedListModal() {
-        const list = document.getElementById('fh-watched-list');
-        const modal = document.getElementById('fh-watched-modal');
+        const list = document.getElementById('fhc-watched-list');
+        const modal = document.getElementById('fhc-watched-modal');
         if (!list || !modal) return;
 
         modal.querySelector('h2').textContent = `👁️ Watched videos (${watchedVideos.length})`;
 
         if (watchedVideos.length === 0) {
-            list.innerHTML = '<div class="fh-empty-list">The list is empty</div>';
+            list.innerHTML = '<div class="fhc-empty-list">The list is empty</div>';
             return;
         }
 
         const sortedVideos = [...watchedVideos].sort((a, b) => new Date(b.date) - new Date(a.date));
 
         list.innerHTML = sortedVideos.slice(0, 100).map(video => `
-            <li class="fh-ignored-item">
-                <div class="fh-ignored-item-title">
+            <li class="fhc-ignored-item">
+                <div class="fhc-ignored-item-title">
                     <a href="${escapeHtml(video.url)}" target="_blank">${escapeHtml(video.title)}</a>
                 </div>
-                <button class="fh-remove-btn" data-video-id="${escapeHtml(video.code || video.id || '')}">Remove</button>
+                <button class="fhc-remove-btn" data-video-id="${escapeHtml(video.code || video.id || '')}">Remove</button>
             </li>
         `).join('');
 
         if (watchedVideos.length > 100) {
-            list.innerHTML += `<div class="fh-empty-list">...and ${watchedVideos.length - 100} more</div>`;
+            list.innerHTML += `<div class="fhc-empty-list">...and ${watchedVideos.length - 100} more</div>`;
         }
 
-        list.querySelectorAll('.fh-remove-btn').forEach(btn => {
+        list.querySelectorAll('.fhc-remove-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1106,8 +1106,8 @@
     // ==================== Control panel ====================
 
     function updatePanelView() {
-        const body = document.getElementById('fh-panel-body');
-        const btn = document.querySelector('.fh-collapse-btn');
+        const body = document.getElementById('fhc-panel-body');
+        const btn = document.querySelector('.fhc-collapse-btn');
         const expanded = panelState === 1;
 
         if (body) body.style.display = expanded ? 'block' : 'none';
@@ -1126,7 +1126,7 @@
     }
 
     function updateMasterToggle() {
-        const master = document.getElementById('fh-master-toggle');
+        const master = document.getElementById('fhc-master-toggle');
         if (!master) return;
 
         const on = toggleDefs.filter(t => t.get()).length;
@@ -1136,44 +1136,44 @@
 
     function createControlPanel() {
         const togglesHtml = toggleDefs.map(t => `
-            <div class="fh-toggle">
+            <div class="fhc-toggle">
                 <input type="checkbox" id="${t.id}" ${t.get() ? 'checked' : ''}>
                 <label for="${t.id}">${t.label}</label>
-                <span class="fh-count" id="${t.countId}">0</span>
+                <span class="fhc-count" id="${t.countId}">0</span>
             </div>
         `).join('');
 
         const panel = document.createElement('div');
-        panel.id = 'fh-control-panel';
+        panel.id = 'fhc-control-panel';
         panel.innerHTML = `
             <h3>
                 <span>🎬 FapHouse Filter</span>
-                <button class="fh-collapse-btn">▼</button>
+                <button class="fhc-collapse-btn">▼</button>
             </h3>
-            <div id="fh-panel-body">
-                <div id="fh-toggles-block">
-                    <div class="fh-head-row">
+            <div id="fhc-panel-body">
+                <div id="fhc-toggles-block">
+                    <div class="fhc-head-row">
                         <span>Hide</span>
                         <span>Hidden</span>
                     </div>
-                    <div class="fh-toggle fh-toggle_master">
-                        <input type="checkbox" id="fh-master-toggle">
-                        <label for="fh-master-toggle">All</label>
-                        <span class="fh-count" id="fh-cnt-total">0</span>
+                    <div class="fhc-toggle fhc-toggle_master">
+                        <input type="checkbox" id="fhc-master-toggle">
+                        <label for="fhc-master-toggle">All</label>
+                        <span class="fhc-count" id="fhc-cnt-total">0</span>
                     </div>
                     ${togglesHtml}
                 </div>
-                <div id="fh-lists-block">
-                    <button class="fh-list-link" id="fh-show-ignored">Ignored videos<span id="fh-link-ignored-count">${ignoredVideos.length}</span></button>
-                    <button class="fh-list-link" id="fh-show-blocked-channels">Blocked channels<span id="fh-link-channels-count">${blockedChannels.length}</span></button>
-                    <button class="fh-list-link" id="fh-show-watched">Watched<span id="fh-link-watched-count">${watchedVideos.length}</span></button>
+                <div id="fhc-lists-block">
+                    <button class="fhc-list-link" id="fhc-show-ignored">Ignored videos<span id="fhc-link-ignored-count">${ignoredVideos.length}</span></button>
+                    <button class="fhc-list-link" id="fhc-show-blocked-channels">Blocked channels<span id="fhc-link-channels-count">${blockedChannels.length}</span></button>
+                    <button class="fhc-list-link" id="fhc-show-watched">Watched<span id="fhc-link-watched-count">${watchedVideos.length}</span></button>
                 </div>
             </div>
         `;
 
         document.body.appendChild(panel);
 
-        panel.querySelector('.fh-collapse-btn').addEventListener('click', (e) => {
+        panel.querySelector('.fhc-collapse-btn').addEventListener('click', (e) => {
             e.stopPropagation();
             panelState = panelState === 1 ? 0 : 1;
             GM_setValue('panelState', panelState);
@@ -1189,7 +1189,7 @@
             });
         });
 
-        document.getElementById('fh-master-toggle').addEventListener('change', (e) => {
+        document.getElementById('fhc-master-toggle').addEventListener('change', (e) => {
             const on = e.target.checked;
             toggleDefs.forEach(t => {
                 toggleKeys[t.key](on);
@@ -1201,9 +1201,9 @@
             filterVideos();
         });
 
-        document.getElementById('fh-show-ignored').addEventListener('click', () => openModal('fh-ignored-modal'));
-        document.getElementById('fh-show-blocked-channels').addEventListener('click', () => openModal('fh-blocked-channels-modal'));
-        document.getElementById('fh-show-watched').addEventListener('click', () => openModal('fh-watched-modal'));
+        document.getElementById('fhc-show-ignored').addEventListener('click', () => openModal('fhc-ignored-modal'));
+        document.getElementById('fhc-show-blocked-channels').addEventListener('click', () => openModal('fhc-blocked-channels-modal'));
+        document.getElementById('fhc-show-watched').addEventListener('click', () => openModal('fhc-watched-modal'));
 
         updateMasterToggle();
         updatePanelView();
@@ -1268,12 +1268,12 @@
 
         swallow.forEach(type => {
             window.addEventListener(type, (e) => {
-                if (e.target.closest?.('.fh-ignore-btn')) e.stopImmediatePropagation();
+                if (e.target.closest?.('.fhc-ignore-btn')) e.stopImmediatePropagation();
             }, true);
         });
 
         window.addEventListener('click', (e) => {
-            const btn = e.target.closest?.('.fh-ignore-btn');
+            const btn = e.target.closest?.('.fhc-ignore-btn');
             if (!btn) return;
 
             e.preventDefault();
@@ -1289,7 +1289,7 @@
             ignoreVideo(id, title, url);
 
             if (thumb.classList.contains('big-hover')) thumb.style.display = 'none';
-            else thumb.classList.add('fh-hidden');
+            else thumb.classList.add('fhc-hidden');
         }, true);
     }
 
