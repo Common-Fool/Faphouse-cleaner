@@ -91,3 +91,11 @@ If the script is useful to you, you can support its development:
 ## Notes
 
 - The script relies on FapHouse's page markup. If the site changes its layout, some filters may stop working until the script is updated. Please [open an issue](https://github.com/Common-Fool/Faphouse-cleaner/issues) if that happens.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
+
+## License
+
+[MIT](LICENSE)
