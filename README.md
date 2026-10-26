@@ -13,6 +13,8 @@ A userscript that cleans up the FapHouse video feed. It hides premium, paid and 
    - [Violentmonkey](https://violentmonkey.github.io/) (Chrome, Edge, Firefox)
 2. Click this link to install the script:
    **[faphouse-cleaner.user.js](https://raw.githubusercontent.com/Common-Fool/Faphouse-cleaner/main/faphouse-cleaner.user.js)**
+
+   Or install it from [Sleazy Fork](https://sleazyfork.org/scripts/602359-faphouse-premium-video-hider), which is kept in sync with this repository.
 3. Confirm the installation in your userscript manager, then open [faphouse.com](https://faphouse.com).
 
 ### Auto-updates
