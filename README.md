@@ -1,5 +1,7 @@
 # FapHouse Cleaner
 
+📢 Updates and new projects: [Telegram channel](https://t.me/common_fool)
+
 A userscript that cleans up the FapHouse video feed. It hides premium, paid and VR videos, videos and channels you've chosen to ignore, videos you've already watched, and ad blocks. You control all of it from a small panel in the corner of the page.
 
 <p align="center">
